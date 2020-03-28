@@ -1,5 +1,8 @@
-import random
 from os import system, name
+import random
+import urllib3
+import certifi
+import json
 
 # Function to clear the terminal after every guess
 def clear():
@@ -9,6 +12,12 @@ def clear():
         _ = system('clear')
 clear()
 
+# Get random word from API
+http = urllib3.PoolManager(ca_certs=certifi.where())
+url = 'https://random-word-api.herokuapp.com/word?number=1'
+resp = http.request('GET', url)
+correct_word = json.loads(resp.data.decode('utf-8'))[0].upper()
+
 # print('|-----')
 # print('|    |')
 # print('|    O')
@@ -16,9 +25,7 @@ clear()
 # print('|    |')
 # print('|   / \\')
 
-# 21 Possible Words
-possible_words = (['Arctic', 'Blanket', 'Blizzard', 'Chilly', 'Coat', 'December', 'Fireplace', 'Freezing', 'Frozen', 'Furnace', 'Gloves', 'Hibernate', 'Radiator', 'Reindeer', 'Skates', 'Snow', 'Snowball', 'Snowman', 'Windy', 'Winter', 'Turtleneck'])
-correct_word = possible_words[random.randint(0,20)].upper()
+
 correct_word_list = []
 length_of_word = len(correct_word)
 display = '_' * length_of_word
@@ -48,7 +55,7 @@ while not(guess_right):
     #print(correct_word)
     if number_of_guesses != 6:
         if '_' in display_list:
-            print('Letters guessed: ', *letters_guessed)
+            print('Letters Guessed: ', *letters_guessed)
             print(*hangman, sep='\n')
             print(''.join(display_list) + '\n')
             user_input = input('Guess the word or a letter: ').upper()
